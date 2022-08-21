@@ -1,0 +1,30 @@
+{
+  "loader": {
+    "name": "java_plain",
+    "version": "1.0"
+  },
+  "license": "TBD",
+  "global": {
+    "version": "8.0.0",
+    "contributors": [
+      {
+        "name": "MoseMister",
+        "description": "Lead Developer"
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "spongeapi",
+        "version": "8.0.0"
+      }
+    ]
+  },
+  "plugins": [
+    {
+      "id": "world_modify",
+      "name": "World Modify",
+      "entrypoint": "org.world.modify.WorldModifyPlugin",
+      "description": "A alternative to world edit"
+    }
+  ]
+}
