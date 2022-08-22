@@ -1,9 +1,6 @@
 package org.world.modify.config;
 
-import org.world.modify.config.messages.Message;
-import org.world.modify.config.messages.MissingPositionsMessage;
-import org.world.modify.config.messages.OnlyRunByMessage;
-import org.world.modify.config.messages.SetPositionMessage;
+import org.world.modify.config.messages.*;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -14,8 +11,9 @@ public final class DefaultMessages {
 
 	public static final SetPositionMessage SET_POSITION = new SetPositionMessage(null);
 	public static final OnlyRunByMessage ONLY_RUN_BY = new OnlyRunByMessage(null);
+	public static final ServerOnlyCommand SERVER_ONLY_COMMAND = new ServerOnlyCommand(null);
 	public static final MissingPositionsMessage MISSING_POSITIONS = new MissingPositionsMessage(null);
-
+	public static final CannotFindBlockMessage CANNOT_FIND_BLOCK = new CannotFindBlockMessage(null);
 
 	public static Collection<Message> getAllDefaultMessages() {
 		return Arrays.stream(DefaultMessages.class.getDeclaredFields())

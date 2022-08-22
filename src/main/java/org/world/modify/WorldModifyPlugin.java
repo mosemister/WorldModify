@@ -11,9 +11,13 @@ import org.spongepowered.api.util.Identifiable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
+import org.world.modify.commands.region.CopyCommand;
+import org.world.modify.commands.region.PasteCommand;
 import org.world.modify.commands.region.ReplaceBlockCommand;
 import org.world.modify.commands.region.SetBlockCommand;
-import org.world.modify.commands.region.SetPosCommand;
+import org.world.modify.commands.region.position.SetPosAtChunkCommand;
+import org.world.modify.commands.region.position.SetPosAtFeetCommand;
+import org.world.modify.commands.region.position.SetPosAtRayCommand;
 import org.world.modify.config.MessageConfig;
 import org.world.modify.data.PlayerData;
 
@@ -46,14 +50,26 @@ public class WorldModifyPlugin {
 
 	@Listener
 	public void onRegisterCommands(RegisterCommandEvent<Command.Parameterized> event) {
-		Command.Parameterized setRegionPositonCommand = SetPosCommand.createCommand();
+		Command.Parameterized setRegionPositonAtFeetCommand = SetPosAtFeetCommand.createCommand();
+		Command.Parameterized setRegionPositionAtRayCommand = SetPosAtRayCommand.createCommand();
+		Command.Parameterized setRegionPositionAtChunkCommand = SetPosAtChunkCommand.createCommand();
+
+		Command.Parameterized setCommand = Command.builder()
+				.addChild(setRegionPositonAtFeetCommand, "here")
+				.addChild(setRegionPositionAtRayCommand, "looking")
+				.build();
+
 		Command.Parameterized setRegionBlockCommand = SetBlockCommand.createCommand();
 		Command.Parameterized replaceRegionBlockCommand = ReplaceBlockCommand.createCommand();
+		Command.Parameterized copyRegionCommand = CopyCommand.createCommand();
+		Command.Parameterized pasteRegionCommand = PasteCommand.createCommand();
 
 		Command.Parameterized regionCommand = Command.builder()
 				.addChild(setRegionBlockCommand, "as", "block")
 				.addChild(replaceRegionBlockCommand, "replace")
-				.addChild(setRegionPositonCommand, "set", "position")
+				.addChild(setCommand, "set", "position")
+				.addChild(copyRegionCommand, "copy")
+				.addChild(pasteRegionCommand, "paste")
 				.build();
 
 		Command.Parameterized mainCommand = Command
@@ -64,10 +80,15 @@ public class WorldModifyPlugin {
 		event.register(this.container, mainCommand, "worldmodify", "wm");
 
 		//worldedit like commands
-		event.register(this.container, SetPosCommand.createWorldEditCommand(1), "/pos1");
-		event.register(this.container, SetPosCommand.createWorldEditCommand(2), "/pos2");
+		event.register(this.container, SetPosAtFeetCommand.createWorldEditCommand(1), "/pos1");
+		event.register(this.container, SetPosAtFeetCommand.createWorldEditCommand(2), "/pos2");
+		event.register(this.container, SetPosAtRayCommand.createWorldEditCommand(1), "/hpos1");
+		event.register(this.container, SetPosAtRayCommand.createWorldEditCommand(2), "/hpos2");
+		event.register(this.container, setRegionPositionAtChunkCommand, "/chunk");
 		event.register(this.container, setRegionBlockCommand, "/set");
 		event.register(this.container, replaceRegionBlockCommand, "/replace");
+		event.register(this.container, copyRegionCommand, "/copy");
+		event.register(this.container, pasteRegionCommand, "/paste");
 
 
 	}

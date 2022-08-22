@@ -1,4 +1,4 @@
-package org.world.modify.commands.region;
+package org.world.modify.commands.region.position;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -16,11 +16,15 @@ import org.world.modify.data.PlayerData;
 import org.world.modify.shapes.Shape;
 import org.world.modify.shapes.Shapes;
 
-public class SetPosCommand {
+public final class SetPosAtFeetCommand {
 
 	public static final String KEY_POSITION = "position";
 
 	public static final String PERMISSION = "worldmodify.region.set.position";
+
+	private SetPosAtFeetCommand() {
+		throw new RuntimeException("Should not be creating a SetPosAtFeetCommand object");
+	}
 
 	public static class SetPositionExecutor implements CommandExecutor {
 
@@ -34,7 +38,7 @@ public class SetPosCommand {
 		public CommandResult execute(CommandContext context) throws CommandException {
 			int position = context.one(this.position)
 					.orElseThrow(() -> new CommandException(Component.text("A position is required"), true));
-			return SetPosCommand.execute(context, position);
+			return SetPosAtFeetCommand.execute(context, position);
 		}
 	}
 

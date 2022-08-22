@@ -28,6 +28,11 @@ public class Cube implements Shape {
 	}
 
 	@Override
+	public @NotNull String getName() {
+		return "Cube";
+	}
+
+	@Override
 	public boolean isValid(@NotNull Map<Integer, Vector3i> positions) {
 		if (positions.size() < this.getMinimumPositionCount()) {
 			return false;
@@ -95,9 +100,7 @@ public class Cube implements Shape {
 	}
 
 	public @NotNull Vector3i[] getPositions(@NotNull Map<Integer, Vector3i> positions) {
-		if (!this.isValid(positions)) {
-			throw new IllegalArgumentException("Missing positions at 1 and/or 2");
-		}
+		assert this.isValid(positions) : "Missing positions at 1 and/or 2";
 		Vector3i pos1 = positions.get(1);
 		Vector3i pos2 = positions.get(2);
 		Vector3i min =
@@ -116,16 +119,16 @@ public class Cube implements Shape {
 
 		clipboard.forEach((rel, snapshot) -> {
 			ServerLocation setPosition = position1.add(rel);
-			if (pos2.x() > setPosition.x()) {
+			if (pos2.x() < setPosition.x()) {
 				return;
 			}
-			if (pos2.y() > setPosition.y()) {
+			if (pos2.y() < setPosition.y()) {
 				return;
 			}
-			if (pos2.z() > setPosition.z()) {
+			if (pos2.z() < setPosition.z()) {
 				return;
 			}
-			snapshot.copy().withLocation(setPosition).restore(true, BlockChangeFlags.NONE);
+			snapshot.copy().withLocation(setPosition).restore(true, BlockChangeFlags.NOTIFY_CLIENTS);
 		});
 	}
 

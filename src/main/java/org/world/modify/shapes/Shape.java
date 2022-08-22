@@ -19,6 +19,8 @@ public interface Shape {
 
 	int getMaximumPositionCount();
 
+	@NotNull String getName();
+
 	boolean isValid(@NotNull Map<Integer, Vector3i> positions);
 
 	void paste(@NotNull ServerWorld world, @NotNull Map<Vector3i, BlockSnapshot> clipboard,
@@ -46,8 +48,14 @@ public interface Shape {
 		Map<Vector3i, BlockSnapshot> snapshots = new LinkedHashMap<>();
 		assert this.isValid(positions) : "Requires positions set at 1 and 2";
 		Vector3i pos1 = positions.get(1);
-		this.walk(world, loc -> snapshots.put(loc.blockPosition().sub(pos1),
-						loc.onServer().orElseThrow(() -> new RuntimeException("On Server check failed")).createSnapshot()),
+		this.walk(world, loc -> {
+					Vector3i rel = loc.blockPosition().sub(pos1);
+					snapshots.put(rel,
+							loc
+									.onServer()
+									.orElseThrow(() -> new RuntimeException("On Server check failed"))
+									.createSnapshot());
+				},
 				positions);
 		return snapshots;
 	}

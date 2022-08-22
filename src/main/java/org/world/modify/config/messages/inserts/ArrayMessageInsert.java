@@ -14,6 +14,12 @@ public class ArrayMessageInsert<T> extends AbstractMessageInsert<Collection<T>> 
 
 	public ArrayMessageInsert(@NotNull String find, boolean useOr, @NotNull Function<T, String> function) {
 		super(find, (collection) -> {
+			if (collection.isEmpty()) {
+				return "[]";
+			}
+			if (collection.size() == 1) {
+				return function.apply(collection.iterator().next());
+			}
 			StringBuilder builder = new StringBuilder();
 			Iterator<T> iter = collection.iterator();
 			for (int i = 0; i < collection.size() - 1; i++) {

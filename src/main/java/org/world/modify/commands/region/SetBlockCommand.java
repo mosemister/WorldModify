@@ -16,17 +16,23 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.math.vector.Vector3i;
 import org.world.modify.WorldModifyPlugin;
 import org.world.modify.data.PlayerData;
-import org.world.modify.shapes.Shapes;
+import org.world.modify.shapes.Shape;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class SetBlockCommand {
+public final class SetBlockCommand {
 
 	public static final String KEY_BLOCK = "block";
 
 	public static final String PERMISSION = "worldmodify.region.set.block";
+
+	private SetBlockCommand() {
+		throw new RuntimeException("Should not be creating a SetBlockCommand object");
+	}
 
 	public static class SetBlockExecutor implements CommandExecutor {
 
@@ -43,7 +49,8 @@ public class SetBlockCommand {
 		}
 	}
 
-	private static <W extends World<W, ?>> CommandResult execute(@NotNull SubjectProxy context, BlockState type) {
+	private static <W extends World<W, ?>> CommandResult execute(@NotNull SubjectProxy context, BlockState type) throws
+			CommandException {
 		Subject subject = context.subject();
 		if (!(subject instanceof Player)) {
 			return CommandResult.error(
@@ -53,22 +60,16 @@ public class SetBlockCommand {
 		W world = (W) player.world();
 		PlayerData data = WorldModifyPlugin.getPlugin().getOrCreatePlayerData(player);
 		Map<Integer, Vector3i> positions = data.getSelectedPosition();
-		if (!Shapes.CUBE.isValid(positions)) {
-			Collection<Integer> notFound = new LinkedList<>();
-			if (!positions.containsKey(1)) {
-				notFound.add(1);
-			}
-			if (!positions.containsKey(2)) {
-				notFound.add(2);
-			}
-			return CommandResult.error(
-					WorldModifyPlugin
-							.getPlugin()
-							.getMessageConfig()
-							.getMissingPositions()
-							.getMessage(notFound));
+		Shape shape = data.getSelectedShape();
+		if (!data.getSelectedShape().isValid(positions)) {
+			Collection<Integer> notFound = IntStream.range(0, shape.getMinimumPositionCount())
+					.filter(i -> !positions.containsKey(i))
+					.boxed()
+					.collect(Collectors.toCollection(LinkedList::new));
+			throw new CommandException(
+					WorldModifyPlugin.getPlugin().getMessageConfig().getMissingPositions().getMessage(notFound));
 		}
-		Shapes.CUBE.set(type, world, positions);
+		shape.set(type, world, positions);
 		return CommandResult.success();
 	}
 
