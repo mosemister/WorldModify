@@ -11,10 +11,8 @@ import org.spongepowered.api.util.Identifiable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
-import org.world.modify.commands.region.CopyCommand;
-import org.world.modify.commands.region.PasteCommand;
-import org.world.modify.commands.region.ReplaceBlockCommand;
-import org.world.modify.commands.region.SetBlockCommand;
+import org.world.modify.commands.draw.LineCommand;
+import org.world.modify.commands.region.*;
 import org.world.modify.commands.region.position.SetPosAtChunkCommand;
 import org.world.modify.commands.region.position.SetPosAtFeetCommand;
 import org.world.modify.commands.region.position.SetPosAtRayCommand;
@@ -51,13 +49,20 @@ public class WorldModifyPlugin {
 	@Listener
 	public void onRegisterCommands(RegisterCommandEvent<Command.Parameterized> event) {
 		Command.Parameterized setRegionPositonAtFeetCommand = SetPosAtFeetCommand.createCommand();
-		Command.Parameterized setRegionPositionAtRayCommand = SetPosAtRayCommand.createCommand();
+		//Command.Parameterized setRegionPositionAtRayCommand = SetPosAtRayCommand.createCommand();
 		Command.Parameterized setRegionPositionAtChunkCommand = SetPosAtChunkCommand.createCommand();
 
 		Command.Parameterized setCommand = Command.builder()
 				.addChild(setRegionPositonAtFeetCommand, "here")
-				.addChild(setRegionPositionAtRayCommand, "looking")
+				//.addChild(setRegionPositionAtRayCommand, "looking")
 				.build();
+
+		Command.Parameterized lineCommand = LineCommand.createCommand();
+
+		Command.Parameterized saveSchematicCommand = CreateSchematicCommand.createCommand();
+
+		Command.Parameterized schematicCommand =
+				Command.builder().addChild(saveSchematicCommand, "save", "create").build();
 
 		Command.Parameterized setRegionBlockCommand = SetBlockCommand.createCommand();
 		Command.Parameterized replaceRegionBlockCommand = ReplaceBlockCommand.createCommand();
@@ -70,6 +75,7 @@ public class WorldModifyPlugin {
 				.addChild(setCommand, "set", "position")
 				.addChild(copyRegionCommand, "copy")
 				.addChild(pasteRegionCommand, "paste")
+				//.addChild(schematicCommand, "schematic")
 				.build();
 
 		Command.Parameterized mainCommand = Command
@@ -89,6 +95,8 @@ public class WorldModifyPlugin {
 		event.register(this.container, replaceRegionBlockCommand, "/replace");
 		event.register(this.container, copyRegionCommand, "/copy");
 		event.register(this.container, pasteRegionCommand, "/paste");
+		//event.register(this.container, schematicCommand, "/schematic");
+		//event.register(this.container, lineCommand, "/line");
 
 
 	}

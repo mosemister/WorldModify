@@ -60,9 +60,10 @@ public final class SetPosAtRayCommand {
 		Optional<RayTraceResult<LocatableBlock>> opRayTraceResult = RayTrace
 				.block()
 				.select(RayTrace.nonAir())
-				.continueWhileBlock(RayTrace.nonAir())
+				.continueWhileBlock(RayTrace.onlyAir())
 				.limit(7)
 				.sourceEyePosition(player)
+				.direction(player)
 				.execute();
 		if (!opRayTraceResult.isPresent()) {
 			return CommandResult.error(
